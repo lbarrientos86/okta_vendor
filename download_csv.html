@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargar CSV</title>
+</head>
+<body>
+
+  <table id="miTabla">
+    <thead>
+      <tr>
+        <th>Columna 1</th>
+        <th>Columna 2</th>
+        <!-- Agrega más columnas según tu necesidad -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Texto 1</td>
+        <td>00123</td>
+        <!-- Agrega más filas según tu necesidad -->
+      </tr>
+    </tbody>
+  </table>
+
+  <button id="descargarCSV">Descargar CSV</button>
+
+  <script>
+    document.getElementById('descargarCSV').addEventListener('click', descargarCSV);
+
+    function descargarCSV() {
+      const tabla = document.getElementById('miTabla');
+      const filas = tabla.querySelectorAll('tr');
+      const csvData = [];
+
+      filas.forEach((fila) => {
+        const rowData = [];
+        const celdas = fila.querySelectorAll('th, td');
+
+        celdas.forEach((celda, index) => {
+          // Agregar comillas dobles para asegurar que el texto con comas esté bien formateado
+          rowData.push(`"${celda.innerText}"`);
+        });
+
+        csvData.push(rowData.join(','));
+      });
+
+      const csvContent = '\uFEFF' + csvData.join('\n'); // BOM para asegurar la codificación UTF-8
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const enlaceDescarga = document.createElement('a');
+
+      enlaceDescarga.href = URL.createObjectURL(blob);
+      enlaceDescarga.target = '_blank';
+      enlaceDescarga.download = 'miArchivo.csv';
+
+      document.body.appendChild(enlaceDescarga);
+      enlaceDescarga.click();
+      document.body.removeChild(enlaceDescarga);
+    }
+  </script>
+
+</body>
+</html>
+
